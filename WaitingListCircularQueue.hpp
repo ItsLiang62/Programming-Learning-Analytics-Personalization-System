@@ -1,0 +1,74 @@
+    #ifndef SESSION_CIRCULAR_QUEUE_HPP
+    #define SESSION_CIRCULAR_QUEUE_HPP
+
+    #include <iostream>
+    #include <string>
+    #include <stdexcept>
+    using namespace std;
+
+    const int MAX_WAITING = 5;
+
+    class SessionCircularQueue {
+        private:
+            string usernames[MAX_WAITING];
+            int front, rear;
+
+        public:
+            SessionCircularQueue() {
+                front = -1;
+                rear = -1;
+            };
+
+            void enqueue(const string& username) {
+                if (isFull()) {
+                    throw std::out_of_range("Session Circular Queue full");
+                } else if (isEmpty()) {
+                    front = rear = 0;
+                } else {
+                    rear = (rear + 1) % MAX_WAITING;
+                }  
+                usernames[rear] = username;
+            };
+
+            string dequeue() {
+                
+                if (isEmpty()) {
+                    throw std::out_of_range("Session Circular Queue empty");
+                } else {
+                    string username = usernames[front];
+                    if (front == rear) {
+                        front = rear = -1;
+                    } else {
+                        front = (front + 1) % MAX_WAITING;
+                    }
+                    return username;
+                }
+            };
+
+            bool isFull() const {
+                return (rear + 1) % MAX_WAITING == front; 
+            };
+
+            bool isEmpty() const {
+                return front == -1;
+            };
+
+            void display() const {
+                if (isEmpty()) {
+                    cout << "No active sessions" << endl;
+                    return;
+                }
+                cout << "Active Sessions: ";
+                int i = front;
+                while (true) {
+                    cout << usernames[i] << " ";
+                    if (i == rear) break;
+                    i = (i + 1) % MAX_WAITING;
+                }
+                cout << endl;
+            }
+    };
+
+    extern SessionCircularQueue sessions;
+
+    #endif
