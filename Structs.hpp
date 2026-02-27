@@ -131,7 +131,7 @@ struct LearnerPerformance {
     vector<string> getRecentPerf(int perfCsvPos) {
         ifstream srcFile(srcPath);
         if (!srcFile.is_open()) {
-            throw runtime_error(srcPath + "could not be opened");
+            throw runtime_error(srcPath + " could not be opened");
         }
 
         string csvLine;
@@ -155,6 +155,8 @@ struct LearnerPerformance {
         int recentCount = min((int)perf.size(), 10);
         vector<string> recentPerf(perf.end() - recentCount, perf.end());
 
+        srcFile.close();
+
         return recentPerf;
     }
 
@@ -168,5 +170,7 @@ struct LearnerPerformance {
         return (lostWeightedAvgScore + recentFailPercent) / 2;
     }
 };
+
+extern Activity activities[5];
 
 #endif

@@ -1,74 +1,100 @@
-    #ifndef SESSION_CIRCULAR_QUEUE_HPP
-    #define SESSION_CIRCULAR_QUEUE_HPP
+#ifndef SESSION_CIRCULAR_QUEUE_HPP
+#define SESSION_CIRCULAR_QUEUE_HPP
 
-    #include <iostream>
-    #include <string>
-    #include <stdexcept>
-    using namespace std;
+#include <iostream>
+#include <string>
+#include <stdexcept>
+using namespace std;
 
-    const int MAX_WAITING = 5;
+const int MAX_SESSIONS = 5;
 
-    class SessionCircularQueue {
-        private:
-            string usernames[MAX_WAITING];
-            int front, rear;
+class SessionCircularQueue {
+    private:
+        string usernames[MAX_SESSIONS];
+        int front, rear;
 
-        public:
-            SessionCircularQueue() {
-                front = -1;
-                rear = -1;
-            };
+    public:
+        SessionCircularQueue() {
+            front = -1;
+            rear = -1;
+        };
 
-            void enqueue(const string& username) {
-                if (isFull()) {
-                    throw std::out_of_range("SessionCircularQueue full");
-                } else if (isEmpty()) {
-                    front = rear = 0;
-                } else {
-                    rear = (rear + 1) % MAX_WAITING;
-                }  
-                usernames[rear] = username;
-            };
-
-            string dequeue() {
-                
-                if (isEmpty()) {
-                    throw std::out_of_range("SessionCircularQueue empty");
-                } else {
-                    string username = usernames[front];
-                    if (front == rear) {
-                        front = rear = -1;
-                    } else {
-                        front = (front + 1) % MAX_WAITING;
-                    }
-                    return username;
-                }
-            };
-
-            bool isFull() const {
-                return (rear + 1) % MAX_WAITING == front; 
-            };
-
-            bool isEmpty() const {
-                return front == -1;
-            };
-
-            void display() const {
-                if (isEmpty()) {
-                    cout << "--- No Active Sessions ---" << endl;
-                    return;
-                }
-                cout << "Active Sessions: ";
-                int i = front;
-                while (true) {
-                    cout << usernames[i] << " ";
-                    if (i == rear) break;
-                    i = (i + 1) % MAX_WAITING;
-                }
-                cout << endl;
+        void enqueue(const string& username) {
+            if (hasLearner(username)) {
+                return;
             }
-    };
+            
+            if (isFull()) {
+                throw std::out_of_range("!! SessionCircularQueue Full !!");
+            } else if (isEmpty()) {
+                front = rear = 0;
+            } else {
+                rear = (rear + 1) % MAX_SESSIONS;
+            }  
+            
+            usernames[rear] = username;
+        };
 
-    extern SessionCircularQueue sessions;
+        string dequeue() {
+            
+            if (isEmpty()) {
+                throw std::out_of_range("!! SessionCircularQueue Empty !!");
+            } else {
+                string username = usernames[front];
+                if (front == rear) {
+                    front = rear = -1;
+                } else {
+                    front = (front + 1) % MAX_SESSIONS;
+                }
+                return username;
+            }
+        };
 
-    #endif
+        bool isFull() const {
+            return (rear + 1) % MAX_SESSIONS == front; 
+        };
+
+        bool isEmpty() const {
+            return front == -1;
+        };
+
+        void display() const {
+            if (isEmpty()) {
+                cout << "--- No Active Sessions ---" << endl;
+                return;
+            }
+            cout << "Active Sessions: ";
+            int i = front;
+            while (true) {
+                cout << usernames[i] << " ";
+                if (i == rear) break;
+                i = (i + 1) % MAX_SESSIONS;
+            }
+            cout << endl;
+        }
+
+        bool hasLearner(const string& username) {
+            if (isEmpty()) return false;
+
+            int i=front;
+
+            while (true) {
+                if (usernames[i] == username) return true;
+                if (i == rear) break;
+                i = (i + 1) % MAX_SESSIONS;
+            }
+            return false;
+        }
+
+        string peek() {
+            if (!isEmpty()) {
+                return usernames[front];
+            } else {
+                throw out_of_range("!! SessionCircularQueue Empty !!");
+            }
+        }
+};
+
+extern SessionCircularQueue sessions;
+
+#endif
