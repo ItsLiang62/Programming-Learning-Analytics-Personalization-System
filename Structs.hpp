@@ -13,6 +13,8 @@
 using namespace std;
 
 struct Activity {
+    // TP074952 ADRIAN LIEW REN QIAN
+    
     string difficulty;
     vector<string> questions;
     string correctAns;
@@ -42,6 +44,7 @@ struct Activity {
 };
 
 struct Attempt {
+    // TP077245 GAVIN YONG DEE XIN
     string username;
     Activity activity;
     string userAns;
@@ -68,6 +71,8 @@ struct Attempt {
 };
 
 struct LearnerPerformance {
+    // TP076334 WANG LIANG XUAN
+
     string username;
     unordered_map<string, int>csvPos;
     int recentFails;

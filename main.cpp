@@ -13,6 +13,8 @@ SessionCircularQueue sessions;
 WaitingListCircularQueue waitingList;
 
 void appendCsv(string filePath, string csvLine) {
+    // TP076334 WANG LIANG XUAN
+
     fstream file(filePath, ios::out | ios::app);
 
     if (!file.is_open()) {
@@ -24,6 +26,7 @@ void appendCsv(string filePath, string csvLine) {
 }
 
 void registration() {
+    // TP076334 WANG LIANG XUAN
 
     cout << "Please enter your username" << endl;
     string username;
@@ -58,6 +61,8 @@ void registration() {
 }
 
 string login() {
+    // TP076334 WANG LIANG XUAN
+
     string username;
     cout << "Please enter your username" << endl;
     cin >> username;
@@ -119,6 +124,8 @@ string login() {
 }
 
 int activity(const string& username) {
+    // TP074952 ADRIAN LIEW REN QIAN
+
     cout << "--- Activities Starting for " + username + "... ---" << endl;
 
     int i=0;
@@ -149,15 +156,24 @@ int activity(const string& username) {
     return 0;
 }
 
+void recordAttempt(const string& username, Activity activity, const string& userAns) {
+    // TP077245 GAVIN YONG DEE XIN
+
+}
+
 void home() {
+    // TP076334 WANG LIANG XUAN
+
     while (true) {
         sessions.display();
         waitingList.display();
 
-        cout << "Welcome to Programming Learning Analytics and Personalization System" << endl;
+        cout << "Welcome to Programming Learning Analytics and Personalization System (PLAPS)" << endl;
         cout << "Please select: " << endl;
         cout << "1. Registration" <<  endl;
         cout << "2. Login" << endl;
+        cout << "3. Display At-Risk Learners" << endl;
+        cout << "4. Exit" << endl;
         
         int selection;
         cin >> selection;
