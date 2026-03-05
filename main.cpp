@@ -5,6 +5,7 @@
 #include <limits>
 #include "SessionCircularQueue.hpp"
 #include "WaitingListCircularQueue.hpp"
+#include "RiskyLearnerPriorityQueue.hpp"
 #include "Structs.hpp"
 
 using namespace std;
@@ -126,6 +127,11 @@ string login() {
 int activity(const string& username) {
     // TP074952 ADRIAN LIEW REN QIAN
 
+    // For testing only, can remove this if you no need anymore
+    // activityTest()
+}
+
+void activityTest(const string& username) {
     cout << "--- Activities Starting for " + username + "... ---" << endl;
 
     int i=0;
@@ -159,6 +165,23 @@ int activity(const string& username) {
 void recordAttempt(const string& username, Activity activity, const string& userAns) {
     // TP077245 GAVIN YONG DEE XIN
 
+}
+
+void displayAtRiskLearners() {
+    RiskyLearnerPriorityQueue riskyLearners;
+
+    ifstream file("learner.csv");
+    if (!file.is_open()) {
+        throw runtime_error("learner.csv could not be opened");
+    }
+
+    string csvUsername;
+    while (getline(file, csvUsername)) {
+        LearnerPerformance learnerPerf(csvUsername);
+        riskyLearners.enqueue(learnerPerf);
+    }
+    
+    riskyLearners.display();
 }
 
 void home() {
@@ -199,6 +222,10 @@ void home() {
             } else {
                 continue;
             }
+        } else if (selection = 3) {
+            displayAtRiskLearners();
+            
+
         } else {
             cout << "--- Please select only 1 or 2. ---" << endl;
             continue;

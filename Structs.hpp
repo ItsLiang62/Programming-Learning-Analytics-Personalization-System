@@ -90,6 +90,13 @@ struct LearnerPerformance {
         calcPerf();
     }
 
+    LearnerPerformance() {
+        csvPos["username"] = 0;
+        csvPos["difficulty"] = 1;
+        csvPos["score"] = 2;
+        csvPos["isPass"] = 3;
+    }
+
     void calcPerf() {
 
         vector<string> isPass = getRecentPerf(csvPos["isPass"]);
@@ -102,8 +109,17 @@ struct LearnerPerformance {
 
         vector<string> strScores = getRecentPerf(csvPos["score"]);
         vector<double> scores;
-        for (const string& score: strScores) {
-            scores.push_back(stod(score));
+        for (const string& scoreStr : strScores) {
+            try {
+                if (!scoreStr.empty()) {
+                    // stod can fail if there are hidden non-numeric chars
+                    scores.push_back(stod(scoreStr));
+                }
+            } catch (const std::invalid_argument& e) {
+                // This will tell you exactly what string caused the crash
+                cerr << "Error: Invalid number found in CSV: [" << scoreStr << "]" << endl;
+                continue; 
+            }
         }
 
         if (!scores.empty()) {
@@ -140,7 +156,7 @@ struct LearnerPerformance {
         }
 
         string csvLine;
-        std::vector<string> perf;
+        std::vector<string> perf; 
 
         while (getline(srcFile, csvLine)) {
             stringstream ss(csvLine);
@@ -166,13 +182,53 @@ struct LearnerPerformance {
     }
 
     double calcRiskScore() {
+        int attemptCount = getRecentPerf(csvPos["isPass"]).size();
+
+        if (attemptCount == 0) {
+            return 0;
+        }
+
         double weightedAvgScore = avgRecentDiffWeight * avgRecentScores;
         double lostWeightedAvgScore = 100 - weightedAvgScore;
 
         double recentFailPercent = 
         (double) recentFails / getRecentPerf(csvPos["isPass"]).size() * 100;
+        
 
         return (lostWeightedAvgScore + recentFailPercent) / 2;
+    }
+
+    string getRandomRecommendation() {
+        vector<string> recommendations = {
+            "Review basic syntax and practice with simple coding exercises.",
+            "Focus on understanding variables, data types, and control structures.",
+            "Complete additional beginner-level coding challenges daily.",
+            "Watch tutorial videos on fundamental programming concepts.",
+            "Practice with online coding platforms like HackerRank or Codecademy.",
+            "Work on small projects to apply object-oriented programming concepts.",
+            "Study data structures and algorithms with practical implementations.",
+            "Review class designs and practice inheritance and polymorphism.",
+            "Debug existing code to improve problem-solving skills.",
+            "Participate in peer programming sessions for collaborative learning.",
+            "Analyze complex algorithms and optimize time/space complexity.",
+            "Study design patterns and refactor existing code.",
+            "Contribute to open-source projects for real-world experience.",
+            "Focus on system design and architecture principles.",
+            "Practice with advanced topics like multithreading and memory management.",
+            "Schedule one-on-one consultation with the instructor.",
+            "Form a study group with peers for regular practice sessions.",
+            "Review previous failed attempts and understand the mistakes.",
+            "Take a step back and rebuild fundamentals before advancing.",
+            "Use spaced repetition techniques to reinforce learning.",
+            "Set small, achievable goals and track daily progress.",
+            "Take breaks when stuck - fresh perspective often helps.",
+            "Remember that struggling is part of the learning process.",
+            "Celebrate small victories to maintain motivation.",
+            "Practice regularly - consistency beats intensity."
+        };
+        
+        int randomIndex = rand() % recommendations.size();
+        return recommendations[randomIndex];
     }
 };
 
