@@ -3,7 +3,6 @@
 
 #include "ActivityStack.hpp"
 #include "Structs.hpp"
-//#include "RecordAttempt.hpp"
 
 void doActivity(ActivityStack& navStack, const string& username) {
     int choice;
@@ -65,7 +64,7 @@ void doActivity(ActivityStack& navStack, const string& username) {
             navStack.pop();
         }
         else if (choice == 7) {
-           // navStack.displayHistory();
+            navStack.display();
         }
         else if (choice == 8) {
             cout << "Exiting Activity Navigation...\n";
