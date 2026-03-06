@@ -64,7 +64,7 @@ Activity act5(
         "Which HTTP status code means 'Not Found'?\nA) 200\nB) 500\nC) 403\nD) 404",
         "What is the logical 'NOT' operator in most languages?\nA) &\nB) !\nC) ~\nD) ^"
     },
-    "CB CDB"
+    "CBCDB"
 );
 
 Activity activities[5] = {act1, act2, act3, act4, act5};
