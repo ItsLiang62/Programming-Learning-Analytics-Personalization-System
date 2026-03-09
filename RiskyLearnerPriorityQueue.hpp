@@ -114,7 +114,7 @@ class RiskyLearnerPriorityQueue {
                 cout << "--- At-Risk Learners Ranking Empty ---" << endl;
                 return;
             }
-            cout << "At-Risk Learners Ranking: ";
+            cout << "At-Risk Learners Ranking: " << endl;
             for (int i=0; i<=rear; i++) {
                 srand(time(0));
                 cout << i+1 << ". " << learnerPerfs[i].username 
