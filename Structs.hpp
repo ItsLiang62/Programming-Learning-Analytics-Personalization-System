@@ -38,7 +38,7 @@ struct Activity {
         return (double) numCorrect / questions.size() * 100;  
     }
 
-    bool isPass(int score) {
+    bool isPass(double score) {
         return score >= 50;
     } 
 };
@@ -61,6 +61,13 @@ struct Attempt {
     userAns(userAns),
     score(activity.calcScore(userAns)),
     isPass(activity.isPass(score)) {}
+
+    Attempt() :
+    username(""),
+    activity(Activity("", {}, "")),
+    userAns(""),
+    score(0),
+    isPass(false) {}
 
     string toCsv() const {
         return username + "," +
@@ -173,6 +180,8 @@ struct LearnerPerformance {
             }
         }
 
+        if (perf.empty()) return {};
+
         int recentCount = min((int)perf.size(), 10);
         vector<string> recentPerf(perf.end() - recentCount, perf.end());
 
@@ -200,31 +209,31 @@ struct LearnerPerformance {
 
     string getRandomRecommendation() {
         vector<string> recommendations = {
-            "Review basic syntax and practice with simple coding exercises.",
-            "Focus on understanding variables, data types, and control structures.",
-            "Complete additional beginner-level coding challenges daily.",
-            "Watch tutorial videos on fundamental programming concepts.",
-            "Practice with online coding platforms like HackerRank or Codecademy.",
-            "Work on small projects to apply object-oriented programming concepts.",
-            "Study data structures and algorithms with practical implementations.",
-            "Review class designs and practice inheritance and polymorphism.",
-            "Debug existing code to improve problem-solving skills.",
-            "Participate in peer programming sessions for collaborative learning.",
-            "Analyze complex algorithms and optimize time/space complexity.",
+            "Review basic syntax and practice with simple coding exercises",
+            "Focus on understanding variables, data types, and control structures",
+            "Complete additional beginner-level coding challenges daily",
+            "Watch tutorial videos on fundamental programming concepts",
+            "Practice with online coding platforms like HackerRank or Codecademy",
+            "Work on small projects to apply object-oriented programming concepts",
+            "Study data structures and algorithms with practical implementations",
+            "Review class designs and practice inheritance and polymorphism",
+            "Debug existing code to improve problem-solving skills",
+            "Participate in peer programming sessions for collaborative learning",
+            "Analyze complex algorithms and optimize time/space complexity",
             "Study design patterns and refactor existing code.",
-            "Contribute to open-source projects for real-world experience.",
+            "Contribute to open-source projects for real-world experience",
             "Focus on system design and architecture principles.",
-            "Practice with advanced topics like multithreading and memory management.",
-            "Schedule one-on-one consultation with the instructor.",
-            "Form a study group with peers for regular practice sessions.",
-            "Review previous failed attempts and understand the mistakes.",
-            "Take a step back and rebuild fundamentals before advancing.",
-            "Use spaced repetition techniques to reinforce learning.",
-            "Set small, achievable goals and track daily progress.",
-            "Take breaks when stuck - fresh perspective often helps.",
-            "Remember that struggling is part of the learning process.",
-            "Celebrate small victories to maintain motivation.",
-            "Practice regularly - consistency beats intensity."
+            "Practice with advanced topics like multithreading and memory management",
+            "Schedule one-on-one consultation with the instructor",
+            "Form a study group with peers for regular practice sessions",
+            "Review previous failed attempts and understand the mistakes",
+            "Take a step back and rebuild fundamentals before advancing",
+            "Use spaced repetition techniques to reinforce learning",
+            "Set small, achievable goals and track daily progress",
+            "Take breaks when stuck - fresh perspective often helps",
+            "Remember that struggling is part of the learning process",
+            "Celebrate small victories to maintain motivation",
+            "Practice regularly - consistency beats intensity"
         };
         
         int randomIndex = rand() % recommendations.size();
