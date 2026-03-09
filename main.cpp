@@ -6,7 +6,9 @@
 #include "SessionCircularQueue.hpp"
 #include "WaitingListCircularQueue.hpp"
 #include "RiskyLearnerPriorityQueue.hpp"
+#include "ActivityStack.hpp"
 #include "Structs.hpp"
+
 
 using namespace std;
 
@@ -127,21 +129,21 @@ string login() {
 int activity(const string& username) {
     // TP074952 ADRIAN LIEW REN QIAN
 
-    // For testing only, can remove this if you no need anymore
-    // activityTest()
-}
+    ActivityStack navStack;
+    int currentIndex = 0;
 
-void activityTest(const string& username) {
-    cout << "--- Activities Starting for " + username + "... ---" << endl;
+    while (true) {
+        cout << "\n--- Activities Starting for " << username << "... ---" << endl;
+        cout << "Current Activity: " << currentIndex + 1 << endl;
+        cout << "Difficulty: " << activities[currentIndex].difficulty << endl;
 
-    int i=0;
-    while (i<5) {
-        sessions.display();
-        waitingList.display();
-
-        cout << "1: Home. You will still remain logged in when you return." << endl;
-        cout << "2: Home. You will log out if its your turn." << endl;
-        cout << "3: Next activity." << endl;
+        cout << "\nPlease select:" << endl;
+        cout << "1. Start Current Activity" << endl;
+        cout << "2. Next Activity" << endl;
+        cout << "3. Back / Undo Previous Activity" << endl;
+        cout << "4. View Activity History" << endl;
+        cout << "5. Home (remain logged in)" << endl;
+        cout << "6. Home (logout if it is your turn)" << endl;
 
         int selection;
         cin >> selection;
@@ -149,17 +151,69 @@ void activityTest(const string& username) {
         if (cin.fail()) {
             cin.clear();
             cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "--- Please select only 1, 2, or 3 ---" << endl;
+            cout << "--- Please enter a valid number. ---" << endl;
             continue;
         }
 
-        if (selection == 1 || selection == 2) {
-            return selection;
-        } else {
-            i++;
+        if (selection == 1) {
+            string userAns = "";
+
+            cout << "\n=== Activity " << currentIndex + 1 << " ===" << endl;
+
+            for (int i = 0; i < activities[currentIndex].questions.size(); i++) {
+                char ans;
+                cout << "\nQ" << i + 1 << ": " << activities[currentIndex].questions[i] << endl;
+                cout << "Your answer: ";
+                cin >> ans;
+                ans = toupper(ans);
+                userAns += ans;
+            }
+
+            ActivityState state = {currentIndex, username, userAns};
+            navStack.push(state);
+
+            double score = activities[currentIndex].calcScore(userAns);
+
+            cout << "\nYour Answers: " << userAns << endl;
+            cout << "Correct Answers: " << activities[currentIndex].correctAns << endl;
+            cout << "Score: " << score << "%" << endl;
+            cout << "Result: " 
+                 << (activities[currentIndex].isPass(score) ? "PASS" : "FAIL") 
+                 << endl;
+
+            //recordAttempt(username, activities[currentIndex], userAns);
+        }
+        else if (selection == 2) {
+            if (currentIndex < 4) {
+                currentIndex++;
+                cout << "--- Moved to Next Activity. ---" << endl;
+            } else {
+                cout << "--- This is the last activity. ---" << endl;
+            }
+        }
+        else if (selection == 3) {
+            if (!navStack.isEmpty()) {
+                ActivityState previous = navStack.peek();
+                currentIndex = previous.activityIndex;
+                navStack.pop();
+                cout << "--- Returned to Previous Activity. ---" << endl;
+            } else {
+                cout << "--- No previous activity in history. ---" << endl;
+            }
+        }
+        else if (selection == 4) {
+            navStack.display();
+        }
+        else if (selection == 5) {
+            return 1;
+        }
+        else if (selection == 6) {
+            return 2;
+        }
+        else {
+            cout << "--- Invalid selection. ---" << endl;
         }
     }
-    return 0;
 }
 
 void recordAttempt(const string& username, Activity activity, const string& userAns) {
