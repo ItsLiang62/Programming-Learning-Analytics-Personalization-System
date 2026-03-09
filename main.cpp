@@ -8,12 +8,13 @@
 #include "RiskyLearnerPriorityQueue.hpp"
 #include "ActivityStack.hpp"
 #include "Structs.hpp"
-
+#include "ActivityLogCircularQueue.hpp"
 
 using namespace std;
 
 SessionCircularQueue sessions;
 WaitingListCircularQueue waitingList;
+ActivityLogCircularQueue activityLogs(50); 
 
 void appendCsv(string filePath, string csvLine) {
     // TP076334 WANG LIANG XUAN
@@ -126,6 +127,13 @@ string login() {
     return username;
 }
 
+void recordAttempt(const string& username, Activity activity, const string& userAns) {
+    // TP077245 GAVIN YONG DEE XIN
+    Attempt newAttempt(username, activity, userAns);
+    activityLogs.enqueue(newAttempt);
+    cout << "--- Activity Logged Successfully ---" << endl;
+}
+
 int activity(const string& username) {
     // TP074952 ADRIAN LIEW REN QIAN
 
@@ -181,16 +189,16 @@ int activity(const string& username) {
                  << (activities[currentIndex].isPass(score) ? "PASS" : "FAIL") 
                  << endl;
 
-            //recordAttempt(username, activities[currentIndex], userAns);
+            recordAttempt(username, activities[currentIndex], userAns);
         }
         else if (selection == 2) {
             if (currentIndex < 4) {
                 currentIndex++;
                 cout << "--- Moved to Next Activity. ---" << endl;
-            } else {
+        } else {
                 cout << "--- This is the last activity. ---" << endl;
-            }
         }
+    }
         else if (selection == 3) {
             if (!navStack.isEmpty()) {
                 ActivityState previous = navStack.peek();
@@ -214,11 +222,6 @@ int activity(const string& username) {
             cout << "--- Invalid selection. ---" << endl;
         }
     }
-}
-
-void recordAttempt(const string& username, Activity activity, const string& userAns) {
-    // TP077245 GAVIN YONG DEE XIN
-
 }
 
 void displayAtRiskLearners() {
@@ -276,17 +279,18 @@ void home() {
             } else {
                 continue;
             }
-        } else if (selection = 3) {
+        } else if (selection == 3) {
             displayAtRiskLearners();
-            
-
+        } else if (selection == 4) {
+            return;
         } else {
-            cout << "--- Please select only 1 or 2. ---" << endl;
+            cout << "--- Please select only 1, 2, 3, or 4. ---" << endl;
             continue;
         }
     }
 }
 
 int main() {
+    srand(time(0));
     home();
 }

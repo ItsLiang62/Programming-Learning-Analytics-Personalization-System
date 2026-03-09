@@ -75,10 +75,13 @@
             }
 
             bool hasLearner(const string& username) {
-                for (const string& u: usernames) {
-                    if (u == username) {
-                        return true;
-                    }
+                if (isEmpty()) return false;
+
+                int i = front;
+                while (true) {
+                    if (usernames[i] == username) return true;
+                    if (i == rear) break;
+                    i = (i + 1) % MAX_WAITING;
                 }
                 return false;
             }
