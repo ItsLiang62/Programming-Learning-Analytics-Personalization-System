@@ -7,11 +7,13 @@
 #include "WaitingListCircularQueue.hpp"
 #include "RiskyLearnerPriorityQueue.hpp"
 #include "Structs.hpp"
+#include "ActivityLogCircularQueue.hpp"
 
 using namespace std;
 
 SessionCircularQueue sessions;
 WaitingListCircularQueue waitingList;
+ActivityLogCircularQueue activityLogs(50); 
 
 void appendCsv(string filePath, string csvLine) {
     // TP076334 WANG LIANG XUAN
@@ -126,7 +128,6 @@ string login() {
 
 int activity(const string& username) {
     // TP074952 ADRIAN LIEW REN QIAN
-
     // For testing only, can remove this if you no need anymore
     // activityTest()
 }
@@ -164,7 +165,9 @@ void activityTest(const string& username) {
 
 void recordAttempt(const string& username, Activity activity, const string& userAns) {
     // TP077245 GAVIN YONG DEE XIN
-
+    Attempt newAttempt(username, activity, userAns);
+    activityLogs.enqueue(newAttempt);
+    cout << "--- Activity Logged Successfully ---" << endl;
 }
 
 void displayAtRiskLearners() {
