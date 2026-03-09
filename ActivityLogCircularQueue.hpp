@@ -16,7 +16,7 @@ private:
 public:
     ActivityLogCircularQueue(int size = 100) {
         maxSize = size;
-        logArray = (Attempt*)operator new[](maxSize * sizeof(Attempt)); // Memory allocation without calling default constructor
+        logArray = new Attempt[maxSize];
         front = 0;
         rear = -1;
         currentSize = 0;

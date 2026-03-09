@@ -38,7 +38,7 @@ struct Activity {
         return (double) numCorrect / questions.size() * 100;  
     }
 
-    bool isPass(int score) {
+    bool isPass(double score) {
         return score >= 50;
     } 
 };
@@ -61,6 +61,13 @@ struct Attempt {
     userAns(userAns),
     score(activity.calcScore(userAns)),
     isPass(activity.isPass(score)) {}
+
+    Attempt() :
+    username(""),
+    activity(Activity("", {}, "")),
+    userAns(""),
+    score(0),
+    isPass(false) {}
 
     string toCsv() const {
         return username + "," +
@@ -172,6 +179,8 @@ struct LearnerPerformance {
                 perf.push_back(values[perfCsvPos]);
             }
         }
+
+        if (perf.empty()) return {};
 
         int recentCount = min((int)perf.size(), 10);
         vector<string> recentPerf(perf.end() - recentCount, perf.end());
