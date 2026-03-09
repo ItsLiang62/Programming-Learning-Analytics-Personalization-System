@@ -187,10 +187,10 @@ int activity(const string& username) {
             if (currentIndex < 4) {
                 currentIndex++;
                 cout << "--- Moved to Next Activity. ---" << endl;
-            } else {
+        } else {
                 cout << "--- This is the last activity. ---" << endl;
-            }
         }
+    }
         else if (selection == 3) {
             if (!navStack.isEmpty()) {
                 ActivityState previous = navStack.peek();
